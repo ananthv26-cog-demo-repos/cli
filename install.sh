@@ -63,6 +63,28 @@ if [ -z "$ARCHIVE" ]; then
   echo "No archive found." >&2
   exit 1
 fi
+
+CHECKSUMS_URL="https://github.com/$REPO/releases/download/$TAG/checksums.txt"
+curl -fsSL -o "$TMPDIR/checksums.txt" "$CHECKSUMS_URL"
+EXPECTED="$(awk -v f="$TARBALL" '$2 == f || $2 == "*" f { print $1; exit }' "$TMPDIR/checksums.txt")"
+if [ -z "$EXPECTED" ]; then
+  echo "No checksum for $TARBALL in $CHECKSUMS_URL" >&2
+  exit 1
+fi
+if command -v sha256sum >/dev/null 2>&1; then
+  ACTUAL="$(sha256sum "$ARCHIVE" | awk '{print $1}')"
+elif command -v shasum >/dev/null 2>&1; then
+  ACTUAL="$(shasum -a 256 "$ARCHIVE" | awk '{print $1}')"
+else
+  echo "sha256sum or shasum is required to verify the download." >&2
+  exit 1
+fi
+if [ "$ACTUAL" != "$EXPECTED" ]; then
+  echo "Checksum mismatch for $TARBALL: expected $EXPECTED, got $ACTUAL" >&2
+  exit 1
+fi
+echo "Checksum verified."
+
 tar -xzf "$ARCHIVE" -C "$TMPDIR"
 
 BIN_DIR="$PREFIX/bin"

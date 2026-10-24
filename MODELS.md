@@ -334,7 +334,7 @@ Constraints:
 | `--aspect_ratio` | false | `1:1` | `1:1`, `4:3`, `3:4`, `16:9`, `9:16` |
 | `--prompt` | true | — | string |
 
-## Video (22)
+## Video (24)
 
 ### brain_activity — Virality Predictor
 
@@ -526,6 +526,58 @@ Example:
 
 ```bash
 higgsfield generate create kling3_0_turbo --prompt "fast handheld product reveal on a clean studio table" --start-image ./first.png --duration 5 --resolution 720p --wait
+```
+
+### kling4_0 — Kling 4.0
+
+| flag | required | default | values |
+|---|---|---|---|
+| `--aspect_ratio` | false | — | `21:9`, `16:9`, `9:16`, `1:1`, `auto` |
+| `--duration` | false | `10` | integer |
+| `--end-image` (single) | false | — | UUID or path |
+| `--image-references` (or `--image`) (repeated) | false | — | UUID or path |
+| `--kling_element_ids` | false | — | array |
+| `--mode` | false | `text-to-video` | `text-to-video`, `image-to-video`, `reference-to-video`, `video-edit` |
+| `--prompt` | false | — | string |
+| `--resolution` | false | `1080p` | `720p`, `1080p` |
+| `--start-image` (single) | false | — | UUID or path |
+| `--video-references` (or `--video`) (repeated) | false | — | UUID or path |
+
+Constraints:
+
+- Duration must be a whole number of seconds between 3 and 30.
+- Mode 'text-to-video' requires prompt; 'image-to-video' requires start_image; 'reference-to-video' requires references or kling_element_ids.
+- At most 7 kling_element_ids are allowed.
+
+Example:
+
+```bash
+higgsfield generate create kling4_0 --prompt "slow camera push toward a lighthouse at dusk" --duration 5 --resolution 720p --wait
+```
+
+### kling_o3_image_reference — Kling 3.0 Omni
+
+| flag | required | default | values |
+|---|---|---|---|
+| `--aspect_ratio` | false | `16:9` | `16:9`, `9:16`, `1:1` |
+| `--duration` | false | `5` | integer |
+| `--image-references` (or `--image`) (0..7) | false | — | UUID or path |
+| `--mode` | false | `std` | `std`, `pro`, `4k` |
+| `--multi_prompt` | false | — | array |
+| `--multi_shots` | false | `false` | boolean |
+| `--prompt` | true | — | string |
+| `--sound` | false | `on` | `on`, `off` |
+
+Constraints:
+
+- Duration must be a whole number of seconds between 3 and 15.
+- At most 7 image_references are allowed.
+- Multi_prompt is required when multi_shots is true; each item is `{prompt, duration}`.
+
+Example:
+
+```bash
+higgsfield generate create kling_o3_image_reference --prompt "the character walks through a neon market" --image ./character.png --duration 5 --mode std --sound off --wait
 ```
 
 ### marketing_studio_video — Marketing Studio Video

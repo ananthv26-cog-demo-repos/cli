@@ -7,7 +7,7 @@ Required flags are listed per model below. Media inputs (`--image`, `--image-ref
 Every flag accepts both spellings: `--aspect_ratio` and `--aspect-ratio` are equivalent.
 
 
-## Image (23)
+## Image (24)
 
 ### cinematic_studio_2_5 — Cinematic Studio 2.5
 
@@ -334,7 +334,7 @@ Constraints:
 | `--aspect_ratio` | false | `1:1` | `1:1`, `4:3`, `3:4`, `16:9`, `9:16` |
 | `--prompt` | true | — | string |
 
-## Video (22)
+## Video (23)
 
 ### brain_activity — Virality Predictor
 
@@ -643,6 +643,36 @@ Constraints:
 - At most 3 audio_references are allowed.
 - At most 12 reference files are allowed in total across images, videos, and audios (including start_image and end_image).
 - Audio_references require at least one image, video, start_image, or end_image.
+
+### seedance_2_5 — Seedance 2.5
+
+| flag | required | default | values |
+|---|---|---|---|
+| `--aspect_ratio` | false | `16:9` | `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16` |
+| `--audio-references` (or `--audio`) (repeated) | false | — | UUID or path |
+| `--bitrate_mode` | false | `standard` | `standard`, `high` |
+| `--draft` | false | `false` | boolean |
+| `--draft_job_id` | false | — | string (completed draft job id) |
+| `--duration` | false | `5` | integer, 4–30 |
+| `--end-image` (single) | false | — | UUID or path |
+| `--extension_mode` | false | — | `backward`, `forward` |
+| `--generate_audio` | false | `true` | boolean |
+| `--image-references` (or `--image`) (repeated) | false | — | UUID or path |
+| `--mode` | false | `t2v` | `t2v`, `omni_reference`, `video_edit`, `video_extension` |
+| `--prompt` | true | — | string |
+| `--resolution` | false | `720p` | `480p`, `720p`, `1080p` |
+| `--start-image` (single) | false | — | UUID or path |
+| `--video-references` (or `--video`) (repeated) | false | — | UUID or path |
+
+Constraints:
+
+- Mode 't2v' accepts no media inputs; use 'omni_reference' for image, video, or audio references.
+- Extension_mode is required for mode 'video_extension' and not allowed otherwise.
+- Mode 'video_edit' edits one reference video, is billed by that video's duration, and ignores duration and aspect_ratio.
+- Mode 'video_extension' ignores aspect_ratio; the output follows the extended video.
+- Draft generates a 480p draft that can be finalized at 1080p within seven days by passing its job id as draft_job_id.
+- Prompt must be non-empty.
+- The REST text-to-video route (`bytedance/seedance-2.5/text-to-video`) rejects aspect_ratio `auto`; it accepts only `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`.
 
 ### veo3 — Google Veo 3
 
